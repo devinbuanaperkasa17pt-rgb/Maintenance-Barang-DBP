@@ -150,7 +150,9 @@
       <div class="two-col">
         <div class="panel">
           <h3>Status Permintaan Perbaikan</h3>
-          <canvas id="chartStatus" height="180"></canvas>
+          <div style="position:relative; height:220px;">
+            <canvas id="chartStatus"></canvas>
+          </div>
         </div>
         <div class="panel">
           <h3>Permintaan Perlu Perhatian</h3>
@@ -332,7 +334,7 @@ function renderDashboard(){
     type:'doughnut',
     data:{ labels:Object.keys(counts), datasets:[{ data:Object.values(counts),
       backgroundColor:['#D97706','#2563EB','#DC2626','#C2410C','#7C3AED','#1E8449'] }] },
-    options:{ plugins:{legend:{position:'bottom', labels:{boxWidth:10, font:{size:11}}}} }
+    options:{ maintainAspectRatio:false, plugins:{legend:{position:'bottom', labels:{boxWidth:10, font:{size:11}}}} }
   });
 
   const attention = DATA.permintaan.filter(r=> r.Status!=='Selesai' && r.Status!=='Ditolak')
