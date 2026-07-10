@@ -142,18 +142,36 @@
 
     <div class="login-err" id="loginErr"></div>
 
-    <label>Divisi</label>
-    <select id="loginDivisi"><option value="">-- pilih divisi --</option></select>
-
-    <label>Nama Staff</label>
-    <select id="loginStaff" disabled><option value="">-- pilih divisi dulu --</option></select>
-
-    <div id="loginPassWrap" style="display:none;">
-      <label>Password Admin</label>
-      <input id="loginPass" type="password" placeholder="Password">
+    <div class="tabs" style="margin-bottom:18px;">
+      <div class="tab active" id="tabBarcode" style="flex:1; text-align:center;" onclick="switchLoginTab('barcode')">📷 Scan Barcode</div>
+      <div class="tab" id="tabManual" style="flex:1; text-align:center;" onclick="switchLoginTab('manual')">👤 Manual</div>
     </div>
 
-    <button id="btnLogin" onclick="doLogin()" disabled>Masuk</button>
+    <div id="loginTabBarcode">
+      <video id="barcodeVideo" style="width:100%; border-radius:9px; display:none; max-height:180px; object-fit:cover; margin-bottom:12px;"></video>
+      <div id="barcodePlaceholder" style="background:var(--gray-50); border:1px dashed var(--gray-200); border-radius:9px; padding:24px 14px; text-align:center; margin-bottom:12px;">
+        <div style="font-size:28px; margin-bottom:8px;">📷</div>
+        <div style="font-size:12.5px; color:var(--gray-500); margin-bottom:12px;">Izinkan akses kamera untuk scan barcode kartu karyawan</div>
+        <button type="button" onclick="startBarcodeScanner()" style="width:auto; display:inline-block; padding:9px 18px;">Izinkan & Aktifkan Kamera</button>
+      </div>
+      <div id="barcodeStatus" style="font-size:12px; color:var(--green); font-weight:600; text-align:center; min-height:16px; margin-bottom:8px;"></div>
+      <input id="barcodeManualInput" placeholder="Atau ketik kode barcode lalu Enter" onkeydown="if(event.key==='Enter'){doLoginBarcode(this.value.trim());}">
+    </div>
+
+    <div id="loginTabManual" style="display:none;">
+      <label>Divisi</label>
+      <select id="loginDivisi"><option value="">-- pilih divisi --</option></select>
+
+      <label>Nama Staff</label>
+      <select id="loginStaff" disabled><option value="">-- pilih divisi dulu --</option></select>
+
+      <div id="loginPassWrap" style="display:none;">
+        <label>Password Admin</label>
+        <input id="loginPass" type="password" placeholder="Password">
+      </div>
+
+      <button id="btnLogin" onclick="doLogin()" disabled>Masuk</button>
+    </div>
   </div>
 </div>
 
@@ -278,8 +296,8 @@
       <div class="page-sub">Daftar aset & kondisi terkini</div>
       <div class="panel">
         <table>
-          <thead><tr><th>ID</th><th>Nama Barang</th><th>Kategori</th><th>Proyek</th><th>Lokasi</th><th>Kondisi</th></tr></thead>
-          <tbody id="barangTbody"><tr><td colspan="6" class="empty">Memuat...</td></tr></tbody>
+          <thead><tr><th>ID</th><th>Nama Barang</th><th>Kategori</th><th>Proyek</th><th>Lokasi</th><th>Tanggal Beli</th><th>Harga Beli</th><th>Kondisi</th></tr></thead>
+          <tbody id="barangTbody"><tr><td colspan="8" class="empty">Memuat...</td></tr></tbody>
         </table>
       </div>
     </div>
@@ -384,6 +402,90 @@ function loadLoginData(){
     selDiv.innerHTML = '<option value="">-- pilih divisi --</option>' + DATA.divisi.map(x=>`<option value="${x.ID_Divisi}">${x['Nama Divisi']}</option>`).join('');
   }).catch(()=> toast('Gagal memuat data login. Cek URL API.'));
 }
+
+// ---------- LOGIN TAB SWITCH ----------
+function switchLoginTab(tab){
+  document.getElementById('tabBarcode').classList.toggle('active', tab==='barcode');
+  document.getElementById('tabManual').classList.toggle('active', tab==='manual');
+  document.getElementById('loginTabBarcode').style.display = tab==='barcode' ? 'block' : 'none';
+  document.getElementById('loginTabManual').style.display = tab==='manual' ? 'block' : 'none';
+  if(tab!=='barcode') stopBarcodeScanner();
+}
+
+// ---------- BARCODE SCANNER (native BarcodeDetector API) ----------
+let barcodeStream = null, barcodeLoopId = null;
+async function startBarcodeScanner(){
+  const statusEl = document.getElementById('barcodeStatus');
+  if(!('BarcodeDetector' in window)){
+    statusEl.style.color = 'var(--red)';
+    statusEl.textContent = 'Browser ini tidak mendukung scan barcode. Gunakan Chrome terbaru, atau pakai kode manual di bawah.';
+    return;
+  }
+  try{
+    barcodeStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
+    const video = document.getElementById('barcodeVideo');
+    video.srcObject = barcodeStream;
+    video.style.display = 'block';
+    document.getElementById('barcodePlaceholder').style.display = 'none';
+    await video.play();
+
+    const detector = new BarcodeDetector({ formats: ['code_128','code_39','ean_13','ean_8','qr_code','upc_a','upc_e'] });
+    const loop = async ()=>{
+      if(!barcodeStream) return;
+      try{
+        const codes = await detector.detect(video);
+        if(codes.length){ doLoginBarcode(codes[0].rawValue); return; }
+      }catch(e){ /* frame skip, ignore */ }
+      barcodeLoopId = requestAnimationFrame(loop);
+    };
+    loop();
+  }catch(err){
+    statusEl.style.color = 'var(--red)';
+    statusEl.textContent = 'Tidak bisa akses kamera: ' + err.message;
+  }
+}
+function stopBarcodeScanner(){
+  if(barcodeLoopId) cancelAnimationFrame(barcodeLoopId);
+  if(barcodeStream){ barcodeStream.getTracks().forEach(t=>t.stop()); barcodeStream = null; }
+  const video = document.getElementById('barcodeVideo');
+  if(video){ video.style.display = 'none'; video.srcObject = null; }
+  document.getElementById('barcodePlaceholder').style.display = 'block';
+}
+function doLoginBarcode(kode){
+  if(!kode) return;
+  const statusEl = document.getElementById('barcodeStatus');
+  statusEl.style.color = 'var(--green)';
+  statusEl.textContent = 'Memproses: ' + kode + ' ...';
+  document.getElementById('loginErr').style.display = 'none';
+  apiPost('loginBarcode', { kode }).then(res=>{
+    if(!res.success){ statusEl.style.color='var(--red)'; statusEl.textContent = res.message; return; }
+    if(res.data.needPassword){
+      stopBarcodeScanner();
+      showModal(`<h3>Password Admin</h3>
+        <p style="font-size:13px; color:var(--gray-500); margin-bottom:12px;">Akun <b>${res.data.namaStaff}</b> adalah Admin, wajib input password.</p>
+        <div class="field"><input id="bcPass" type="password" placeholder="Password"></div>
+        <div class="modal-actions"><button class="btn btn-green" onclick="submitBarcodeAdminPass('${res.data.namaStaff}')">Masuk</button><button class="btn btn-outline" onclick="closeModal(); switchLoginTab('barcode');">Batal</button></div>`);
+      return;
+    }
+    stopBarcodeScanner();
+    CURRENT_USER = res.data;
+    sessionStorage.setItem('maintenance_user', JSON.stringify(CURRENT_USER));
+    enterApp();
+  }).catch(()=>{ statusEl.style.color='var(--red)'; statusEl.textContent = 'Gagal memproses barcode.'; });
+}
+function submitBarcodeAdminPass(namaStaff){
+  const pass = document.getElementById('bcPass').value;
+  apiPost('login', { namaStaff, password: pass }).then(res=>{
+    if(res.success){
+      closeModal();
+      CURRENT_USER = res.data;
+      sessionStorage.setItem('maintenance_user', JSON.stringify(CURRENT_USER));
+      enterApp();
+    } else {
+      toast(res.message);
+    }
+  });
+}
 document.getElementById('loginDivisi').addEventListener('change', e=>{
   const idDiv = e.target.value;
   const selStaff = document.getElementById('loginStaff');
@@ -421,6 +523,8 @@ function doLogout(){
   document.getElementById('loginScreen').style.display = 'flex';
   document.getElementById('loginStaff').value=''; document.getElementById('loginDivisi').value='';
   document.getElementById('loginPass').value='';
+  document.getElementById('barcodeStatus').textContent = '';
+  switchLoginTab('barcode');
 }
 function enterApp(){
   document.getElementById('loginScreen').style.display = 'none';
@@ -584,9 +688,14 @@ function renderJadwal(){
   tbody.innerHTML = DATA.jadwal.length ? DATA.jadwal.map(j=>`<tr><td>${j['Nama Barang']}</td><td>${j.Lokasi}</td><td>${j['Interval Servis (bulan)']} bulan</td><td>${j['Servis Terakhir']||'-'}</td><td>${j['Jadwal Servis Berikutnya']||'-'}</td><td>${statusBadge(j.Status)}</td><td>${j.Status!=='Selesai' ? `<button class="btn btn-green btn-sm" onclick="openSelesaiJadwal('${j.ID_Jadwal}')">Selesaikan</button>` : '-'}</td></tr>`).join('') : '<tr><td colspan="7" class="empty">Belum ada jadwal rutin</td></tr>';
 }
 
+function formatRupiah(n){
+  const num = Number(n);
+  if(!num) return '-';
+  return 'Rp ' + num.toLocaleString('id-ID');
+}
 function renderBarangTable(){
   const tbody = document.getElementById('barangTbody');
-  tbody.innerHTML = DATA.barang.length ? DATA.barang.map(b=>`<tr><td>${b.ID_Barang}</td><td>${b['Nama Barang']}</td><td>${b.Kategori}</td><td>${b['Proyek Saat Ini']}</td><td>${b['Lokasi/Ruangan Saat Ini']}</td><td>${b.Kondisi}</td></tr>`).join('') : '<tr><td colspan="6" class="empty">Belum ada data barang</td></tr>';
+  tbody.innerHTML = DATA.barang.length ? DATA.barang.map(b=>`<tr><td>${b.ID_Barang}</td><td>${b['Nama Barang']}</td><td>${b.Kategori}</td><td>${b['Proyek Saat Ini']}</td><td>${b['Lokasi/Ruangan Saat Ini']}</td><td>${b['Tanggal Beli']||'-'}</td><td>${formatRupiah(b['Harga Beli'])}</td><td>${b.Kondisi}</td></tr>`).join('') : '<tr><td colspan="8" class="empty">Belum ada data barang</td></tr>';
 }
 
 function switchMasterTab(tab){
