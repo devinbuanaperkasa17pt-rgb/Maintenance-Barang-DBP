@@ -18,9 +18,22 @@
   }
   *{box-sizing:border-box; margin:0; padding:0;}
   body{font-family:'Segoe UI',Arial,sans-serif; background:var(--gray-50); color:var(--gray-900); font-size:14px;}
-  .app{display:flex; min-height:100vh;}
 
-  /* SIDEBAR */
+  #loginScreen{min-height:100vh; display:flex; align-items:center; justify-content:center; background:var(--gray-50);}
+  .login-card{background:#fff; border:1px solid var(--gray-200); border-radius:16px; padding:32px; width:380px; max-width:92vw; box-shadow:0 8px 30px rgba(0,0,0,.06);}
+  .login-logo{display:flex; align-items:center; gap:10px; margin-bottom:22px;}
+  .login-logo .ic{width:42px; height:42px; background:var(--green); border-radius:12px; display:flex; align-items:center; justify-content:center; color:#fff; font-size:20px;}
+  .login-logo h1{font-size:16px; font-weight:800;}
+  .login-logo p{font-size:12px; color:var(--gray-500);}
+  .login-card label{display:block; font-size:11.5px; font-weight:700; color:var(--gray-500); text-transform:uppercase; letter-spacing:.03em; margin-bottom:6px;}
+  .login-card select, .login-card input{width:100%; padding:10px 12px; border:1px solid var(--gray-200); border-radius:9px; font-size:13.5px; margin-bottom:16px;}
+  .login-card button{width:100%; padding:11px; border:none; border-radius:9px; background:var(--green); color:#fff; font-weight:700; font-size:14px; cursor:pointer;}
+  .login-card button:disabled{opacity:.5; cursor:not-allowed;}
+  .login-err{background:var(--red-light); color:var(--red); font-size:12.5px; padding:8px 10px; border-radius:8px; margin-bottom:14px; display:none;}
+
+  .app{display:none;}
+  .app.show{display:flex; min-height:100vh;}
+
   .sidebar{width:240px; background:#fff; border-right:1px solid var(--gray-200); display:flex; flex-direction:column; flex-shrink:0;}
   .brand{display:flex; align-items:center; gap:10px; padding:20px 18px; border-bottom:1px solid var(--gray-200);}
   .brand-icon{width:38px; height:38px; background:var(--green); border-radius:9px; display:flex; align-items:center; justify-content:center; color:#fff; font-size:18px;}
@@ -31,11 +44,14 @@
   .nav-item:hover{background:var(--gray-100);}
   .nav-item.active{background:var(--green-light); color:var(--green-dark); font-weight:700;}
   .nav-item .ic{width:18px; text-align:center;}
-  .role-switch{padding:14px 14px; border-top:1px solid var(--gray-200);}
-  .role-switch label{font-size:11px; color:var(--gray-500); text-transform:uppercase; letter-spacing:.03em;}
-  .role-switch select, .role-switch input{width:100%; margin-top:6px; padding:8px 10px; border:1px solid var(--gray-200); border-radius:8px; font-size:13px;}
+  .user-box{padding:14px; border-top:1px solid var(--gray-200);}
+  .user-row{display:flex; align-items:center; gap:9px; background:var(--gray-50); border-radius:10px; padding:9px 10px; margin-bottom:8px;}
+  .user-avatar{width:30px; height:30px; border-radius:50%; background:var(--green); color:#fff; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:800; flex-shrink:0;}
+  .user-name{font-size:12.5px; font-weight:700;}
+  .user-role{font-size:11px; color:var(--gray-500);}
+  .btn-logout{width:100%; padding:7px; border:none; background:none; color:var(--gray-500); font-size:12px; border-radius:8px; cursor:pointer; text-align:left;}
+  .btn-logout:hover{background:var(--red-light); color:var(--red);}
 
-  /* MAIN */
   main{flex:1; padding:26px 32px; overflow-x:auto;}
   .page-title{font-size:22px; font-weight:800;}
   .page-sub{color:var(--gray-500); font-size:13px; margin-top:2px; margin-bottom:20px;}
@@ -48,7 +64,12 @@
 
   .panel{background:#fff; border:1px solid var(--gray-200); border-radius:var(--radius); padding:20px; margin-bottom:20px;}
   .panel h3{font-size:15px; font-weight:700; margin-bottom:14px;}
+  .panel-head{display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;}
+  .panel-head h3{margin-bottom:0;}
   .two-col{display:grid; grid-template-columns:1.3fr 1fr; gap:16px;}
+  .tabs{display:flex; gap:6px; margin-bottom:18px;}
+  .tab{padding:8px 16px; border-radius:8px; background:var(--gray-100); font-size:13px; font-weight:600; cursor:pointer; color:var(--gray-700);}
+  .tab.active{background:var(--green); color:#fff;}
 
   table{width:100%; border-collapse:collapse; font-size:13px;}
   th{text-align:left; padding:10px 12px; background:var(--gray-50); color:var(--gray-500); font-weight:600; font-size:11.5px; text-transform:uppercase; letter-spacing:.02em; border-bottom:1px solid var(--gray-200);}
@@ -64,6 +85,9 @@
   .b-selesai{background:var(--green-light); color:var(--green-dark);}
   .b-terlambat{background:var(--red-light); color:var(--red);}
   .b-terjadwal{background:var(--blue-light); color:var(--blue);}
+  .b-admin{background:var(--purple-light); color:var(--purple);}
+  .b-staff{background:var(--blue-light); color:var(--blue);}
+  .b-aktif{background:var(--green-light); color:var(--green-dark);}
 
   .prio-urgent{color:var(--red); font-weight:700;}
   .prio-tinggi{color:var(--amber); font-weight:700;}
@@ -97,11 +121,43 @@
   .config-bar input{width:100%; margin-top:6px; padding:7px 9px; border:1px solid #FDE68A; border-radius:6px; font-size:12px;}
   .view{display:none;}
   .view.active{display:block;}
+  .row-click{cursor:pointer;}
   @media(max-width:900px){.cards{grid-template-columns:repeat(2,1fr);} .two-col{grid-template-columns:1fr;} .sidebar{width:190px;}}
 </style>
 </head>
 <body>
-<div class="app">
+
+<div id="loginScreen">
+  <div class="login-card">
+    <div class="login-logo">
+      <div class="ic">🔧</div>
+      <div><h1>Maintenance Barang</h1><p>PT Devin Buana Perkasa</p></div>
+    </div>
+
+    <div class="config-bar" id="loginConfigBar">
+      ⚠️ Isi URL Web App Apps Script kamu (berakhiran <b>/exec</b>):
+      <input id="apiUrlInput" placeholder="https://script.google.com/macros/s/xxxxx/exec">
+      <button class="btn btn-green btn-sm" style="margin-top:8px;" onclick="saveApiUrl()">Simpan</button>
+    </div>
+
+    <div class="login-err" id="loginErr"></div>
+
+    <label>Divisi</label>
+    <select id="loginDivisi"><option value="">-- pilih divisi --</option></select>
+
+    <label>Nama Staff</label>
+    <select id="loginStaff" disabled><option value="">-- pilih divisi dulu --</option></select>
+
+    <div id="loginPassWrap" style="display:none;">
+      <label>Password Admin</label>
+      <input id="loginPass" type="password" placeholder="Password">
+    </div>
+
+    <button id="btnLogin" onclick="doLogin()" disabled>Masuk</button>
+  </div>
+</div>
+
+<div class="app" id="app">
 
   <aside class="sidebar">
     <div class="brand">
@@ -118,27 +174,21 @@
       <div class="nav-item" data-view="kelola" data-admin-only="1"><span class="ic">✅</span> Kelola Permintaan</div>
       <div class="nav-item" data-view="jadwal"><span class="ic">🗓️</span> Jadwal Rutin</div>
       <div class="nav-item" data-view="barang"><span class="ic">📦</span> Data Barang</div>
+      <div class="nav-item" data-view="master" data-admin-only="1"><span class="ic">🗂️</span> Master Data</div>
     </nav>
-    <div class="role-switch">
-      <label>Login sebagai</label>
-      <select id="roleSelect">
-        <option value="staff">Staff</option>
-        <option value="admin">Admin</option>
-      </select>
-      <label style="margin-top:10px; display:block;">Nama</label>
-      <input id="userName" placeholder="Nama kamu" value="Nadia Faramita">
-      <div style="margin-top:12px; font-size:11px; color:var(--gray-400); cursor:pointer; text-decoration:underline;" onclick="document.getElementById('configBar').style.display='block';">Ganti URL API</div>
+    <div class="user-box">
+      <div class="user-row">
+        <div class="user-avatar" id="avatarInit">-</div>
+        <div>
+          <div class="user-name" id="sbUserName">-</div>
+          <div class="user-role" id="sbUserRole">-</div>
+        </div>
+      </div>
+      <button class="btn-logout" onclick="doLogout()">🚪 Keluar</button>
     </div>
   </aside>
 
   <main>
-    <div class="config-bar" id="configBar">
-      ⚠️ Isi URL Web App Google Apps Script kamu dulu (dari Deploy → Manage deployments, yang berakhiran <b>/exec</b>):
-      <input id="apiUrlInput" placeholder="https://script.google.com/macros/s/xxxxx/exec">
-      <button class="btn btn-green btn-sm" style="margin-top:8px;" onclick="saveApiUrl()">Simpan & Muat Data</button>
-    </div>
-
-    <!-- DASHBOARD -->
     <div class="view active" id="view-dashboard">
       <div class="page-title">Dashboard</div>
       <div class="page-sub">Ringkasan maintenance barang real-time</div>
@@ -151,9 +201,7 @@
       <div class="two-col">
         <div class="panel">
           <h3>Status Permintaan Perbaikan</h3>
-          <div style="position:relative; height:220px;">
-            <canvas id="chartStatus"></canvas>
-          </div>
+          <div style="position:relative; height:220px;"><canvas id="chartStatus"></canvas></div>
         </div>
         <div class="panel">
           <h3>Permintaan Perlu Perhatian</h3>
@@ -163,7 +211,6 @@
       </div>
     </div>
 
-    <!-- AJUKAN SERVIS -->
     <div class="view" id="view-ajukan">
       <div class="page-title">Ajukan Servis</div>
       <div class="page-sub">Laporkan barang yang butuh perbaikan</div>
@@ -174,13 +221,10 @@
             <select id="fBarang" required></select>
             <div class="hint" id="fBarangInfo"></div>
           </div>
-          <div class="grid2">
-            <div class="field"><label>Divisi</label><input id="fDivisi" placeholder="misal: Sales"></div>
-            <div class="field"><label>Prioritas</label>
-              <select id="fPrioritas">
-                <option>Rendah</option><option>Sedang</option><option selected>Tinggi</option><option>Urgent</option>
-              </select>
-            </div>
+          <div class="field"><label>Prioritas</label>
+            <select id="fPrioritas">
+              <option>Rendah</option><option>Sedang</option><option selected>Tinggi</option><option>Urgent</option>
+            </select>
           </div>
           <div class="field">
             <label>Keluhan / Kerusakan</label>
@@ -196,7 +240,6 @@
       </div>
     </div>
 
-    <!-- PERMINTAAN SAYA -->
     <div class="view" id="view-permintaan-saya">
       <div class="page-title">Permintaan Saya</div>
       <div class="page-sub">Pantau progres pengajuan servis kamu</div>
@@ -208,7 +251,6 @@
       </div>
     </div>
 
-    <!-- KELOLA PERMINTAAN (ADMIN) -->
     <div class="view" id="view-kelola">
       <div class="page-title">Kelola Permintaan</div>
       <div class="page-sub">Crosscheck, approve, dan update progres servis</div>
@@ -220,7 +262,6 @@
       </div>
     </div>
 
-    <!-- JADWAL RUTIN -->
     <div class="view" id="view-jadwal">
       <div class="page-title">Jadwal Maintenance Rutin</div>
       <div class="page-sub">Servis berkala terjadwal (AC, dll) — terpisah dari laporan kerusakan</div>
@@ -232,7 +273,6 @@
       </div>
     </div>
 
-    <!-- DATA BARANG -->
     <div class="view" id="view-barang">
       <div class="page-title">Data Barang</div>
       <div class="page-sub">Daftar aset & kondisi terkini</div>
@@ -244,10 +284,59 @@
       </div>
     </div>
 
+    <div class="view" id="view-master">
+      <div class="page-title">Master Data</div>
+      <div class="page-sub">Kelola staff, vendor, kategori, dan lokasi</div>
+      <div class="tabs">
+        <div class="tab active" data-tab="staff" onclick="switchMasterTab('staff')">Staff</div>
+        <div class="tab" data-tab="vendor" onclick="switchMasterTab('vendor')">Vendor</div>
+        <div class="tab" data-tab="kategori" onclick="switchMasterTab('kategori')">Kategori</div>
+        <div class="tab" data-tab="lokasi" onclick="switchMasterTab('lokasi')">Lokasi</div>
+      </div>
+
+      <div id="master-staff">
+        <div class="panel">
+          <div class="panel-head"><h3>Daftar Staff</h3><button class="btn btn-green" onclick="openTambahStaff()">+ Tambah Staff</button></div>
+          <table><thead><tr><th>Nama</th><th>Divisi</th><th>Role</th><th>Status</th></tr></thead>
+          <tbody id="staffTbody"><tr><td colspan="4" class="empty">Memuat...</td></tr></tbody></table>
+        </div>
+      </div>
+
+      <div id="master-vendor" style="display:none;">
+        <div class="panel">
+          <div class="panel-head"><h3>Daftar Vendor/Teknisi</h3><button class="btn btn-green" onclick="openTambahVendor()">+ Tambah Vendor</button></div>
+          <table><thead><tr><th>Nama Vendor</th><th>Kontak</th><th>Alamat</th></tr></thead>
+          <tbody id="vendorTbody"><tr><td colspan="3" class="empty">Memuat...</td></tr></tbody></table>
+        </div>
+      </div>
+
+      <div id="master-kategori" style="display:none;">
+        <div class="two-col">
+          <div class="panel">
+            <div class="panel-head"><h3>Kategori</h3><button class="btn btn-green btn-sm" onclick="openTambahKategori()">+ Tambah</button></div>
+            <table><thead><tr><th>Nama Kategori</th></tr></thead>
+            <tbody id="kategoriTbody"><tr><td class="empty">Memuat...</td></tr></tbody></table>
+          </div>
+          <div class="panel">
+            <div class="panel-head"><h3 id="subKatTitle">Sub Kategori</h3><button class="btn btn-green btn-sm" onclick="openTambahSubKategori()">+ Tambah</button></div>
+            <table><thead><tr><th>Nama Sub Kategori</th></tr></thead>
+            <tbody id="subKategoriTbody"><tr><td class="empty">Pilih kategori di sebelah kiri</td></tr></tbody></table>
+          </div>
+        </div>
+      </div>
+
+      <div id="master-lokasi" style="display:none;">
+        <div class="panel">
+          <div class="panel-head"><h3>Daftar Lokasi</h3><button class="btn btn-green" onclick="openTambahLokasi()">+ Tambah Lokasi</button></div>
+          <table><thead><tr><th>Nama Lokasi</th><th>Proyek</th></tr></thead>
+          <tbody id="lokasiTbody"><tr><td colspan="2" class="empty">Memuat...</td></tr></tbody></table>
+        </div>
+      </div>
+    </div>
+
   </main>
 </div>
 
-<!-- MODAL -->
 <div class="modal-bg" id="modalBg">
   <div class="modal" id="modalBox"></div>
 </div>
@@ -255,19 +344,98 @@
 
 <script>
 let API_URL = '';
-let DATA = { barang: [], permintaan: [], jadwal: [] };
+let DATA = { barang:[], permintaan:[], jadwal:[], staff:[], divisi:[], vendor:[], kategori:[], subkategori:[], lokasi:[] };
+let CURRENT_USER = null;
+let selectedKatId = null;
 
-// Muat URL API yang tersimpan dari kunjungan sebelumnya
-(function initApiUrl(){
+(function init(){
   const saved = localStorage.getItem('maintenance_api_url');
-  if(saved){
-    API_URL = saved;
-    document.getElementById('configBar').style.display = 'none';
-  }
+  if(saved){ API_URL = saved; document.getElementById('loginConfigBar').style.display='none'; loadLoginData(); }
+  const savedUser = sessionStorage.getItem('maintenance_user');
+  if(savedUser && saved){ CURRENT_USER = JSON.parse(savedUser); enterApp(); }
 })();
-window.addEventListener('DOMContentLoaded', ()=>{ if(API_URL) loadAll(); });
 
-// ---------- NAV ----------
+function saveApiUrl(){
+  const url = document.getElementById('apiUrlInput').value.trim();
+  if(!url){ toast('Isi URL dulu'); return; }
+  API_URL = url;
+  localStorage.setItem('maintenance_api_url', url);
+  document.getElementById('loginConfigBar').style.display = 'none';
+  loadLoginData();
+}
+function apiGet(action, params={}){
+  const qs = new URLSearchParams({action, ...params}).toString();
+  return fetch(API_URL + '?' + qs).then(r=>r.json());
+}
+function apiPost(action, body={}){
+  return fetch(API_URL, { method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'}, body: JSON.stringify({action, ...body}) }).then(r=>r.json());
+}
+function toast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 2600);
+}
+
+function loadLoginData(){
+  Promise.all([apiGet('getDivisi'), apiGet('getStaff')]).then(([d,s])=>{
+    DATA.divisi = d.success ? d.data : [];
+    DATA.staff = s.success ? s.data : [];
+    const selDiv = document.getElementById('loginDivisi');
+    selDiv.innerHTML = '<option value="">-- pilih divisi --</option>' + DATA.divisi.map(x=>`<option value="${x.ID_Divisi}">${x['Nama Divisi']}</option>`).join('');
+  }).catch(()=> toast('Gagal memuat data login. Cek URL API.'));
+}
+document.getElementById('loginDivisi').addEventListener('change', e=>{
+  const idDiv = e.target.value;
+  const selStaff = document.getElementById('loginStaff');
+  const filtered = DATA.staff.filter(s=> s.ID_Divisi === idDiv && s.Status === 'Aktif');
+  selStaff.innerHTML = '<option value="">-- pilih nama --</option>' + filtered.map(s=>`<option value="${s['Nama Staff']}">${s['Nama Staff']}</option>`).join('');
+  selStaff.disabled = !idDiv;
+  document.getElementById('loginPassWrap').style.display='none';
+  document.getElementById('btnLogin').disabled = true;
+});
+document.getElementById('loginStaff').addEventListener('change', e=>{
+  const staff = DATA.staff.find(s=> s['Nama Staff'] === e.target.value);
+  document.getElementById('loginPassWrap').style.display = staff && staff.Role === 'Admin' ? 'block' : 'none';
+  document.getElementById('btnLogin').disabled = !staff;
+});
+function doLogin(){
+  const nama = document.getElementById('loginStaff').value;
+  const pass = document.getElementById('loginPass').value;
+  if(!nama){ toast('Pilih nama staff dulu'); return; }
+  document.getElementById('loginErr').style.display = 'none';
+  apiPost('login', { namaStaff: nama, password: pass }).then(res=>{
+    if(res.success){
+      CURRENT_USER = res.data;
+      sessionStorage.setItem('maintenance_user', JSON.stringify(CURRENT_USER));
+      enterApp();
+    } else {
+      const errBox = document.getElementById('loginErr');
+      errBox.textContent = res.message; errBox.style.display = 'block';
+    }
+  });
+}
+function doLogout(){
+  sessionStorage.removeItem('maintenance_user');
+  CURRENT_USER = null;
+  document.getElementById('app').classList.remove('show');
+  document.getElementById('loginScreen').style.display = 'flex';
+  document.getElementById('loginStaff').value=''; document.getElementById('loginDivisi').value='';
+  document.getElementById('loginPass').value='';
+}
+function enterApp(){
+  document.getElementById('loginScreen').style.display = 'none';
+  document.getElementById('app').classList.add('show');
+  document.getElementById('sbUserName').textContent = CURRENT_USER['Nama Staff'];
+  document.getElementById('sbUserRole').textContent = CURRENT_USER['Role'] === 'Admin' ? 'Administrator' : 'Staff';
+  document.getElementById('avatarInit').textContent = CURRENT_USER['Nama Staff'].split(' ').map(w=>w[0]).slice(0,2).join('').toUpperCase();
+  applyRoleVisibility();
+  loadAll();
+}
+function applyRoleVisibility(){
+  const isAdmin = CURRENT_USER && CURRENT_USER['Role'] === 'Admin';
+  document.querySelectorAll('[data-admin-only]').forEach(el=> el.style.display = isAdmin ? '' : 'none');
+}
+
 document.querySelectorAll('.nav-item').forEach(item=>{
   item.addEventListener('click', ()=>{
     document.querySelectorAll('.nav-item').forEach(i=>i.classList.remove('active'));
@@ -276,59 +444,22 @@ document.querySelectorAll('.nav-item').forEach(item=>{
     document.getElementById('view-'+item.dataset.view).classList.add('active');
   });
 });
-document.getElementById('roleSelect').addEventListener('change', applyRole);
-function applyRole(){
-  const isAdmin = document.getElementById('roleSelect').value === 'admin';
-  document.querySelectorAll('[data-admin-only]').forEach(el=> el.style.display = isAdmin ? '' : 'none');
-}
-applyRole();
 
-// ---------- API HELPERS ----------
-function saveApiUrl(){
-  const url = document.getElementById('apiUrlInput').value.trim();
-  if(!url){ toast('Isi URL dulu'); return; }
-  API_URL = url;
-  localStorage.setItem('maintenance_api_url', url);
-  document.getElementById('configBar').style.display = 'none';
-  loadAll();
-}
-function apiGet(action, params={}){
-  const qs = new URLSearchParams({action, ...params}).toString();
-  return fetch(API_URL + '?' + qs).then(r=>r.json());
-}
-function apiPost(action, body={}){
-  return fetch(API_URL, {
-    method:'POST',
-    headers:{'Content-Type':'text/plain;charset=utf-8'},
-    body: JSON.stringify({action, ...body})
-  }).then(r=>r.json());
-}
-function toast(msg){
-  const t = document.getElementById('toast');
-  t.textContent = msg; t.classList.add('show');
-  setTimeout(()=>t.classList.remove('show'), 2600);
-}
-
-// ---------- LOAD DATA ----------
 function loadAll(){
   Promise.all([
-    apiGet('getBarang'), apiGet('getPermintaan'), apiGet('getJadwalRutin')
-  ]).then(([b,p,j])=>{
-    DATA.barang = b.success ? b.data : [];
-    DATA.permintaan = p.success ? p.data : [];
-    DATA.jadwal = j.success ? j.data : [];
+    apiGet('getBarang'), apiGet('getPermintaan'), apiGet('getJadwalRutin'),
+    apiGet('getVendor'), apiGet('getKategori'), apiGet('getSubKategori'), apiGet('getLokasi')
+  ]).then(([b,p,j,v,k,sk,l])=>{
+    DATA.barang = b.success?b.data:[]; DATA.permintaan = p.success?p.data:[]; DATA.jadwal = j.success?j.data:[];
+    DATA.vendor = v.success?v.data:[]; DATA.kategori = k.success?k.data:[]; DATA.subkategori = sk.success?sk.data:[]; DATA.lokasi = l.success?l.data:[];
     renderAll();
-  }).catch(err=>{
-    toast('Gagal ambil data. Cek URL API / deployment.');
-    console.error(err);
-  });
+  }).catch(err=>{ toast('Gagal ambil data.'); console.error(err); });
 }
 function renderAll(){
   renderDashboard(); renderBarangDropdown(); renderMyRequests();
-  renderKelola(); renderJadwal(); renderBarangTable();
+  renderKelola(); renderJadwal(); renderBarangTable(); renderMasterAll();
 }
 
-// ---------- DASHBOARD ----------
 let chartInstance = null;
 function renderDashboard(){
   document.getElementById('statTotal').textContent = DATA.barang.filter(b=>b.Status==='Aktif').length;
@@ -336,40 +467,31 @@ function renderDashboard(){
   document.getElementById('statProses').textContent = DATA.permintaan.filter(r=>r.Status==='Sedang Diservis').length;
   document.getElementById('statOverdue').textContent = DATA.jadwal.filter(j=>j.Status==='Terlambat').length;
 
-  const counts = {};
-  ['Pending','Disetujui','Ditolak','Menunggu Teknisi','Sedang Diservis','Selesai'].forEach(s=> counts[s]=0);
+  const counts = {}; ['Pending','Disetujui','Ditolak','Menunggu Teknisi','Sedang Diservis','Selesai'].forEach(s=> counts[s]=0);
   DATA.permintaan.forEach(r=>{ if(counts[r.Status]!==undefined) counts[r.Status]++; });
 
   const ctx = document.getElementById('chartStatus');
   if(chartInstance) chartInstance.destroy();
   chartInstance = new Chart(ctx, {
     type:'doughnut',
-    data:{ labels:Object.keys(counts), datasets:[{ data:Object.values(counts),
-      backgroundColor:['#D97706','#2563EB','#DC2626','#C2410C','#7C3AED','#1E8449'] }] },
+    data:{ labels:Object.keys(counts), datasets:[{ data:Object.values(counts), backgroundColor:['#D97706','#2563EB','#DC2626','#C2410C','#7C3AED','#1E8449'] }] },
     options:{ maintainAspectRatio:false, plugins:{legend:{position:'bottom', labels:{boxWidth:10, font:{size:11}}}} }
   });
 
-  const attention = DATA.permintaan.filter(r=> r.Status!=='Selesai' && r.Status!=='Ditolak')
-    .sort((a,b)=> prioOrder(b.Prioritas)-prioOrder(a.Prioritas));
+  const attention = DATA.permintaan.filter(r=> r.Status!=='Selesai' && r.Status!=='Ditolak').sort((a,b)=> prioOrder(b.Prioritas)-prioOrder(a.Prioritas));
   const tbody = document.getElementById('attentionTbody');
-  tbody.innerHTML = attention.length ? attention.slice(0,6).map(r=>`
-    <tr><td>${r['Nama Barang']||'-'}</td><td class="${prioClass(r.Prioritas)}">${r.Prioritas||'-'}</td><td>${statusBadge(r.Status)}</td></tr>
-  `).join('') : '<tr><td colspan="3" class="empty">Tidak ada yang perlu perhatian</td></tr>';
+  tbody.innerHTML = attention.length ? attention.slice(0,6).map(r=>`<tr><td>${r['Nama Barang']||'-'}</td><td class="${prioClass(r.Prioritas)}">${r.Prioritas||'-'}</td><td>${statusBadge(r.Status)}</td></tr>`).join('') : '<tr><td colspan="3" class="empty">Tidak ada yang perlu perhatian</td></tr>';
 }
 function prioOrder(p){ return {Urgent:4,Tinggi:3,Sedang:2,Rendah:1}[p]||0; }
 function prioClass(p){ return 'prio-'+(p||'').toLowerCase(); }
 function statusBadge(s){
-  const map = {'Pending':'b-pending','Disetujui':'b-disetujui','Ditolak':'b-ditolak',
-    'Menunggu Teknisi':'b-menunggu','Sedang Diservis':'b-proses','Selesai':'b-selesai',
-    'Terjadwal':'b-terjadwal','Terlambat':'b-terlambat'};
+  const map = {'Pending':'b-pending','Disetujui':'b-disetujui','Ditolak':'b-ditolak','Menunggu Teknisi':'b-menunggu','Sedang Diservis':'b-proses','Selesai':'b-selesai','Terjadwal':'b-terjadwal','Terlambat':'b-terlambat'};
   return `<span class="badge ${map[s]||''}">${s||'-'}</span>`;
 }
 
-// ---------- AJUKAN SERVIS ----------
 function renderBarangDropdown(){
   const sel = document.getElementById('fBarang');
-  sel.innerHTML = '<option value="">-- pilih barang --</option>' + DATA.barang.map(b=>
-    `<option value="${b.ID_Barang}">${b['Nama Barang']} (${b['Proyek Saat Ini']})</option>`).join('');
+  sel.innerHTML = '<option value="">-- pilih barang --</option>' + DATA.barang.map(b=>`<option value="${b.ID_Barang}">${b['Nama Barang']} (${b['Proyek Saat Ini']})</option>`).join('');
   sel.onchange = ()=>{
     const b = DATA.barang.find(x=>x.ID_Barang===sel.value);
     document.getElementById('fBarangInfo').textContent = b ? `Kategori: ${b.Kategori} · Lokasi: ${b['Lokasi/Ruangan Saat Ini']} · Proyek: ${b['Proyek Saat Ini']}` : '';
@@ -379,17 +501,11 @@ document.getElementById('formAjukan').addEventListener('submit', e=>{
   e.preventDefault();
   const b = DATA.barang.find(x=>x.ID_Barang===document.getElementById('fBarang').value);
   if(!b){ toast('Pilih barang dulu'); return; }
-  const staff = document.getElementById('userName').value.trim() || 'Staff';
+  const divisiNama = (DATA.divisi.find(d=>d.ID_Divisi===CURRENT_USER.ID_Divisi)||{})['Nama Divisi'] || '';
   apiPost('submitPermintaan', {
-    namaStaff: staff,
-    divisi: document.getElementById('fDivisi').value,
-    proyek: b['Proyek Saat Ini'],
-    idBarang: b.ID_Barang,
-    namaBarang: b['Nama Barang'],
-    kategori: b.Kategori,
-    lokasi: b['Lokasi/Ruangan Saat Ini'],
-    keluhan: document.getElementById('fKeluhan').value,
-    fotoUrl: document.getElementById('fFoto').value,
+    namaStaff: CURRENT_USER['Nama Staff'], divisi: divisiNama, proyek: b['Proyek Saat Ini'],
+    idBarang: b.ID_Barang, namaBarang: b['Nama Barang'], kategori: b.Kategori, lokasi: b['Lokasi/Ruangan Saat Ini'],
+    keluhan: document.getElementById('fKeluhan').value, fotoUrl: document.getElementById('fFoto').value,
     prioritas: document.getElementById('fPrioritas').value
   }).then(res=>{
     if(res.success){ toast('Permintaan berhasil diajukan: '+res.data.id); document.getElementById('formAjukan').reset(); loadAll(); }
@@ -397,29 +513,15 @@ document.getElementById('formAjukan').addEventListener('submit', e=>{
   });
 });
 
-// ---------- PERMINTAAN SAYA ----------
 function renderMyRequests(){
-  const staff = document.getElementById('userName').value.trim();
-  const rows = DATA.permintaan.filter(r=>r['Nama Staff']===staff);
+  const rows = DATA.permintaan.filter(r=>r['Nama Staff']===CURRENT_USER['Nama Staff']);
   const tbody = document.getElementById('myRequestsTbody');
-  tbody.innerHTML = rows.length ? rows.map(r=>`
-    <tr><td>${r['Timestamp Pengajuan']||'-'}</td><td>${r['Nama Barang']}</td>
-    <td>${r['Keluhan/Kerusakan']}</td><td class="${prioClass(r.Prioritas)}">${r.Prioritas}</td>
-    <td>${statusBadge(r.Status)}</td></tr>`).join('')
-    : '<tr><td colspan="5" class="empty">Belum ada permintaan</td></tr>';
+  tbody.innerHTML = rows.length ? rows.map(r=>`<tr><td>${r['Timestamp Pengajuan']||'-'}</td><td>${r['Nama Barang']}</td><td>${r['Keluhan/Kerusakan']}</td><td class="${prioClass(r.Prioritas)}">${r.Prioritas}</td><td>${statusBadge(r.Status)}</td></tr>`).join('') : '<tr><td colspan="5" class="empty">Belum ada permintaan</td></tr>';
 }
-document.getElementById('userName').addEventListener('change', ()=>{ if(API_URL) loadAll(); });
 
-// ---------- KELOLA (ADMIN) ----------
 function renderKelola(){
   const tbody = document.getElementById('kelolaTbody');
-  tbody.innerHTML = DATA.permintaan.length ? DATA.permintaan.map(r=>`
-    <tr><td>${r['Timestamp Pengajuan']||'-'}</td><td>${r['Nama Staff']}</td><td>${r['Nama Barang']}</td>
-    <td style="max-width:180px;">${r['Keluhan/Kerusakan']}</td>
-    <td class="${prioClass(r.Prioritas)}">${r.Prioritas}</td>
-    <td>${statusBadge(r.Status)}</td>
-    <td>${kelolaActions(r)}</td></tr>`).join('')
-    : '<tr><td colspan="7" class="empty">Belum ada permintaan</td></tr>';
+  tbody.innerHTML = DATA.permintaan.length ? DATA.permintaan.map(r=>`<tr><td>${r['Timestamp Pengajuan']||'-'}</td><td>${r['Nama Staff']}</td><td>${r['Nama Barang']}</td><td style="max-width:180px;">${r['Keluhan/Kerusakan']}</td><td class="${prioClass(r.Prioritas)}">${r.Prioritas}</td><td>${statusBadge(r.Status)}</td><td>${kelolaActions(r)}</td></tr>`).join('') : '<tr><td colspan="7" class="empty">Belum ada permintaan</td></tr>';
 }
 function kelolaActions(r){
   const id = r.ID_Permintaan;
@@ -430,100 +532,153 @@ function kelolaActions(r){
   return '-';
 }
 
-// ---------- MODALS ----------
 function showModal(html){ document.getElementById('modalBox').innerHTML = html; document.getElementById('modalBg').classList.add('show'); }
 function closeModal(){ document.getElementById('modalBg').classList.remove('show'); }
 document.getElementById('modalBg').addEventListener('click', e=>{ if(e.target.id==='modalBg') closeModal(); });
 
 function openApprove(id, disetujui){
-  showModal(`
-    <h3>${disetujui?'Approve':'Tolak'} Permintaan</h3>
+  showModal(`<h3>${disetujui?'Approve':'Tolak'} Permintaan</h3>
     <div class="field"><label>Catatan Crosscheck</label><textarea id="mCatatan" placeholder="Hasil pengecekan..."></textarea></div>
-    <div class="modal-actions">
-      <button class="btn ${disetujui?'btn-green':'btn-red'}" onclick="submitApprove('${id}',${disetujui})">Konfirmasi</button>
-      <button class="btn btn-outline" onclick="closeModal()">Batal</button>
-    </div>`);
+    <div class="modal-actions"><button class="btn ${disetujui?'btn-green':'btn-red'}" onclick="submitApprove('${id}',${disetujui})">Konfirmasi</button><button class="btn btn-outline" onclick="closeModal()">Batal</button></div>`);
 }
 function submitApprove(id, disetujui){
-  apiPost('approvePermintaan', { id, disetujui, catatan: document.getElementById('mCatatan').value, adminName: document.getElementById('userName').value })
+  apiPost('approvePermintaan', { id, disetujui, catatan: document.getElementById('mCatatan').value, adminName: CURRENT_USER['Nama Staff'] })
     .then(res=>{ closeModal(); if(res.success){ toast('Status diperbarui'); loadAll(); } else toast('Gagal: '+res.message); });
 }
 function openProses(id, status){
-  showModal(`
-    <h3>${status}</h3>
-    <div class="field"><label>Teknisi/Vendor</label><input id="mTeknisi" placeholder="Nama teknisi/vendor"></div>
-    <div class="modal-actions">
-      <button class="btn btn-green" onclick="submitProses('${id}','${status}')">Simpan</button>
-      <button class="btn btn-outline" onclick="closeModal()">Batal</button>
-    </div>`);
+  showModal(`<h3>${status}</h3><div class="field"><label>Teknisi/Vendor</label><select id="mTeknisi"><option value="">-- pilih vendor --</option>${DATA.vendor.map(v=>`<option value="${v['Nama Vendor']}">${v['Nama Vendor']}</option>`).join('')}</select></div>
+    <div class="modal-actions"><button class="btn btn-green" onclick="submitProses('${id}','${status}')">Simpan</button><button class="btn btn-outline" onclick="closeModal()">Batal</button></div>`);
 }
 function submitProses(id, status){
-  apiPost('prosesTeknisi', { id, status, teknisi: document.getElementById('mTeknisi').value, adminName: document.getElementById('userName').value })
+  apiPost('prosesTeknisi', { id, status, teknisi: document.getElementById('mTeknisi').value, adminName: CURRENT_USER['Nama Staff'] })
     .then(res=>{ closeModal(); if(res.success){ toast('Status diperbarui'); loadAll(); } else toast('Gagal: '+res.message); });
 }
 function openSelesai(id, idBarang){
-  showModal(`
-    <h3>Selesaikan Servis</h3>
+  showModal(`<h3>Selesaikan Servis</h3>
     <div class="field"><label>Tindakan yang Dilakukan</label><textarea id="mTindakan" placeholder="misal: ganti freon, cuci unit..."></textarea></div>
-    <div class="field"><label>Hasil Akhir</label>
-      <select id="mHasil"><option>Diperbaiki</option><option>Diganti Baru</option><option>Tidak Bisa Diperbaiki</option></select>
-    </div>
+    <div class="field"><label>Hasil Akhir</label><select id="mHasil"><option>Diperbaiki</option><option>Diganti Baru</option><option>Tidak Bisa Diperbaiki</option></select></div>
     <div class="field"><label>Biaya Servis (Rp)</label><input id="mBiaya" type="number" placeholder="0"></div>
     <div class="field"><label>Catatan Tambahan</label><textarea id="mCatatanTambahan"></textarea></div>
-    <div class="modal-actions">
-      <button class="btn btn-green" onclick="submitSelesai('${id}','${idBarang}')">Simpan</button>
-      <button class="btn btn-outline" onclick="closeModal()">Batal</button>
-    </div>`);
+    <div class="modal-actions"><button class="btn btn-green" onclick="submitSelesai('${id}','${idBarang}')">Simpan</button><button class="btn btn-outline" onclick="closeModal()">Batal</button></div>`);
 }
 function submitSelesai(id, idBarang){
-  apiPost('selesaikanServis', {
-    id, idBarang,
-    tindakan: document.getElementById('mTindakan').value,
-    hasilAkhir: document.getElementById('mHasil').value,
-    biaya: Number(document.getElementById('mBiaya').value)||0,
-    catatanTambahan: document.getElementById('mCatatanTambahan').value,
-    adminName: document.getElementById('userName').value
-  }).then(res=>{ closeModal(); if(res.success){ toast('Servis selesai dicatat'); loadAll(); } else toast('Gagal: '+res.message); });
+  apiPost('selesaikanServis', { id, idBarang, tindakan: document.getElementById('mTindakan').value, hasilAkhir: document.getElementById('mHasil').value,
+    biaya: Number(document.getElementById('mBiaya').value)||0, catatanTambahan: document.getElementById('mCatatanTambahan').value, adminName: CURRENT_USER['Nama Staff'] })
+    .then(res=>{ closeModal(); if(res.success){ toast('Servis selesai dicatat'); loadAll(); } else toast('Gagal: '+res.message); });
 }
 function openSelesaiJadwal(id){
-  showModal(`
-    <h3>Selesaikan Servis Rutin</h3>
-    <div class="field"><label>Teknisi/Vendor</label><input id="mjTeknisi"></div>
+  showModal(`<h3>Selesaikan Servis Rutin</h3>
+    <div class="field"><label>Teknisi/Vendor</label><select id="mjTeknisi"><option value="">-- pilih vendor --</option>${DATA.vendor.map(v=>`<option value="${v['Nama Vendor']}">${v['Nama Vendor']}</option>`).join('')}</select></div>
     <div class="field"><label>Tindakan</label><textarea id="mjTindakan"></textarea></div>
     <div class="field"><label>Biaya (Rp)</label><input id="mjBiaya" type="number" placeholder="0"></div>
-    <div class="modal-actions">
-      <button class="btn btn-green" onclick="submitSelesaiJadwal('${id}')">Simpan</button>
-      <button class="btn btn-outline" onclick="closeModal()">Batal</button>
-    </div>`);
+    <div class="modal-actions"><button class="btn btn-green" onclick="submitSelesaiJadwal('${id}')">Simpan</button><button class="btn btn-outline" onclick="closeModal()">Batal</button></div>`);
 }
 function submitSelesaiJadwal(id){
-  apiPost('selesaikanJadwalRutin', {
-    id, teknisi: document.getElementById('mjTeknisi').value,
-    tindakan: document.getElementById('mjTindakan').value,
-    biaya: Number(document.getElementById('mjBiaya').value)||0,
-    adminName: document.getElementById('userName').value
-  }).then(res=>{ closeModal(); if(res.success){ toast('Jadwal rutin diperbarui'); loadAll(); } else toast('Gagal: '+res.message); });
+  apiPost('selesaikanJadwalRutin', { id, teknisi: document.getElementById('mjTeknisi').value, tindakan: document.getElementById('mjTindakan').value,
+    biaya: Number(document.getElementById('mjBiaya').value)||0, adminName: CURRENT_USER['Nama Staff'] })
+    .then(res=>{ closeModal(); if(res.success){ toast('Jadwal rutin diperbarui'); loadAll(); } else toast('Gagal: '+res.message); });
 }
 
-// ---------- JADWAL RUTIN ----------
 function renderJadwal(){
   const tbody = document.getElementById('jadwalTbody');
-  tbody.innerHTML = DATA.jadwal.length ? DATA.jadwal.map(j=>`
-    <tr><td>${j['Nama Barang']}</td><td>${j.Lokasi}</td><td>${j['Interval Servis (bulan)']} bulan</td>
-    <td>${j['Servis Terakhir']||'-'}</td><td>${j['Jadwal Servis Berikutnya']||'-'}</td>
-    <td>${statusBadge(j.Status)}</td>
-    <td>${j.Status!=='Selesai' ? `<button class="btn btn-green btn-sm" onclick="openSelesaiJadwal('${j.ID_Jadwal}')">Selesaikan</button>` : '-'}</td></tr>`).join('')
-    : '<tr><td colspan="7" class="empty">Belum ada jadwal rutin</td></tr>';
+  tbody.innerHTML = DATA.jadwal.length ? DATA.jadwal.map(j=>`<tr><td>${j['Nama Barang']}</td><td>${j.Lokasi}</td><td>${j['Interval Servis (bulan)']} bulan</td><td>${j['Servis Terakhir']||'-'}</td><td>${j['Jadwal Servis Berikutnya']||'-'}</td><td>${statusBadge(j.Status)}</td><td>${j.Status!=='Selesai' ? `<button class="btn btn-green btn-sm" onclick="openSelesaiJadwal('${j.ID_Jadwal}')">Selesaikan</button>` : '-'}</td></tr>`).join('') : '<tr><td colspan="7" class="empty">Belum ada jadwal rutin</td></tr>';
 }
 
-// ---------- DATA BARANG ----------
 function renderBarangTable(){
   const tbody = document.getElementById('barangTbody');
-  tbody.innerHTML = DATA.barang.length ? DATA.barang.map(b=>`
-    <tr><td>${b.ID_Barang}</td><td>${b['Nama Barang']}</td><td>${b.Kategori}</td>
-    <td>${b['Proyek Saat Ini']}</td><td>${b['Lokasi/Ruangan Saat Ini']}</td>
-    <td>${b.Kondisi}</td></tr>`).join('')
-    : '<tr><td colspan="6" class="empty">Belum ada data barang</td></tr>';
+  tbody.innerHTML = DATA.barang.length ? DATA.barang.map(b=>`<tr><td>${b.ID_Barang}</td><td>${b['Nama Barang']}</td><td>${b.Kategori}</td><td>${b['Proyek Saat Ini']}</td><td>${b['Lokasi/Ruangan Saat Ini']}</td><td>${b.Kondisi}</td></tr>`).join('') : '<tr><td colspan="6" class="empty">Belum ada data barang</td></tr>';
+}
+
+function switchMasterTab(tab){
+  document.querySelectorAll('#view-master .tab').forEach(t=>t.classList.toggle('active', t.dataset.tab===tab));
+  ['staff','vendor','kategori','lokasi'].forEach(t=> document.getElementById('master-'+t).style.display = t===tab ? 'block' : 'none');
+}
+function renderMasterAll(){
+  renderStaffTable(); renderVendorTable(); renderKategoriTable(); renderLokasiTable();
+}
+function divisiNamaOf(id){ return (DATA.divisi.find(d=>d.ID_Divisi===id)||{})['Nama Divisi'] || '-'; }
+function renderStaffTable(){
+  const tbody = document.getElementById('staffTbody');
+  tbody.innerHTML = DATA.staff.length ? DATA.staff.map(s=>`<tr><td>${s['Nama Staff']}</td><td>${divisiNamaOf(s.ID_Divisi)}</td><td><span class="badge ${s.Role==='Admin'?'b-admin':'b-staff'}">${s.Role}</span></td><td><span class="badge ${s.Status==='Aktif'?'b-aktif':'b-ditolak'}">${s.Status}</span></td></tr>`).join('') : '<tr><td colspan="4" class="empty">Belum ada staff</td></tr>';
+}
+function renderVendorTable(){
+  const tbody = document.getElementById('vendorTbody');
+  tbody.innerHTML = DATA.vendor.length ? DATA.vendor.map(v=>`<tr><td>${v['Nama Vendor']}</td><td>${v.Kontak||'-'}</td><td>${v.Alamat||'-'}</td></tr>`).join('') : '<tr><td colspan="3" class="empty">Belum ada vendor</td></tr>';
+}
+function renderKategoriTable(){
+  const tbody = document.getElementById('kategoriTbody');
+  tbody.innerHTML = DATA.kategori.length ? DATA.kategori.map(k=>`<tr class="row-click" style="${k.ID_Kategori===selectedKatId?'background:var(--green-light);':''}" onclick="selectKategori('${k.ID_Kategori}')"><td>${k['Nama Kategori']}</td></tr>`).join('') : '<tr><td class="empty">Belum ada kategori</td></tr>';
+  renderSubKategoriTable();
+}
+function selectKategori(id){ selectedKatId = id; renderKategoriTable(); }
+function renderSubKategoriTable(){
+  const tbody = document.getElementById('subKategoriTbody');
+  const kat = DATA.kategori.find(k=>k.ID_Kategori===selectedKatId);
+  document.getElementById('subKatTitle').textContent = kat ? 'Sub Kategori — '+kat['Nama Kategori'] : 'Sub Kategori';
+  if(!selectedKatId){ tbody.innerHTML = '<tr><td class="empty">Pilih kategori di sebelah kiri</td></tr>'; return; }
+  const rows = DATA.subkategori.filter(s=>s.ID_Kategori===selectedKatId);
+  tbody.innerHTML = rows.length ? rows.map(s=>`<tr><td>${s['Nama SubKategori']}</td></tr>`).join('') : '<tr><td class="empty">Belum ada sub kategori</td></tr>';
+}
+function renderLokasiTable(){
+  const tbody = document.getElementById('lokasiTbody');
+  tbody.innerHTML = DATA.lokasi.length ? DATA.lokasi.map(l=>`<tr><td>${l['Nama Lokasi']}</td><td>${l.Proyek||'-'}</td></tr>`).join('') : '<tr><td colspan="2" class="empty">Belum ada lokasi</td></tr>';
+}
+
+function openTambahStaff(){
+  showModal(`<h3>Tambah Staff</h3>
+    <div class="field"><label>Nama</label><input id="nsNama"></div>
+    <div class="field"><label>Divisi</label><select id="nsDivisi">${DATA.divisi.map(d=>`<option value="${d.ID_Divisi}">${d['Nama Divisi']}</option>`).join('')}</select></div>
+    <div class="field"><label>Role</label><select id="nsRole" onchange="document.getElementById('nsPassWrap').style.display=this.value==='Admin'?'block':'none'"><option value="Staff">Staff</option><option value="Admin">Admin</option></select></div>
+    <div class="field" id="nsPassWrap" style="display:none;"><label>Password</label><input id="nsPass" type="password"></div>
+    <div class="modal-actions"><button class="btn btn-green" onclick="submitTambahStaff()">Simpan</button><button class="btn btn-outline" onclick="closeModal()">Batal</button></div>`);
+}
+function submitTambahStaff(){
+  const nama = document.getElementById('nsNama').value.trim();
+  if(!nama){ toast('Nama wajib diisi'); return; }
+  apiPost('tambahStaff', { nama, idDivisi: document.getElementById('nsDivisi').value, role: document.getElementById('nsRole').value, password: document.getElementById('nsPass')?.value || '', adminName: CURRENT_USER['Nama Staff'] })
+    .then(res=>{ closeModal(); if(res.success){ toast('Staff ditambahkan'); loadAll(); } else toast('Gagal: '+res.message); });
+}
+function openTambahVendor(){
+  showModal(`<h3>Tambah Vendor</h3>
+    <div class="field"><label>Nama Vendor</label><input id="nvNama"></div>
+    <div class="field"><label>Kontak</label><input id="nvKontak"></div>
+    <div class="field"><label>Alamat</label><input id="nvAlamat"></div>
+    <div class="modal-actions"><button class="btn btn-green" onclick="submitTambahVendor()">Simpan</button><button class="btn btn-outline" onclick="closeModal()">Batal</button></div>`);
+}
+function submitTambahVendor(){
+  const nama = document.getElementById('nvNama').value.trim();
+  if(!nama){ toast('Nama wajib diisi'); return; }
+  apiPost('tambahVendor', { nama, kontak: document.getElementById('nvKontak').value, alamat: document.getElementById('nvAlamat').value, adminName: CURRENT_USER['Nama Staff'] })
+    .then(res=>{ closeModal(); if(res.success){ toast('Vendor ditambahkan'); loadAll(); } else toast('Gagal: '+res.message); });
+}
+function openTambahKategori(){
+  showModal(`<h3>Tambah Kategori</h3><div class="field"><label>Nama Kategori</label><input id="mkNama"></div>
+    <div class="modal-actions"><button class="btn btn-green" onclick="submitTambahKategori()">Simpan</button><button class="btn btn-outline" onclick="closeModal()">Batal</button></div>`);
+}
+function submitTambahKategori(){
+  const nama = document.getElementById('mkNama').value.trim();
+  if(!nama){ toast('Nama wajib diisi'); return; }
+  apiPost('tambahKategori', { nama, adminName: CURRENT_USER['Nama Staff'] }).then(res=>{ closeModal(); if(res.success){ toast('Kategori ditambahkan'); loadAll(); } else toast('Gagal: '+res.message); });
+}
+function openTambahSubKategori(){
+  if(!selectedKatId){ toast('Pilih kategori dulu di sebelah kiri'); return; }
+  showModal(`<h3>Tambah Sub Kategori</h3><div class="field"><label>Nama Sub Kategori</label><input id="mskNama"></div>
+    <div class="modal-actions"><button class="btn btn-green" onclick="submitTambahSubKategori()">Simpan</button><button class="btn btn-outline" onclick="closeModal()">Batal</button></div>`);
+}
+function submitTambahSubKategori(){
+  const nama = document.getElementById('mskNama').value.trim();
+  if(!nama){ toast('Nama wajib diisi'); return; }
+  apiPost('tambahSubKategori', { nama, idKategori: selectedKatId, adminName: CURRENT_USER['Nama Staff'] }).then(res=>{ closeModal(); if(res.success){ toast('Sub kategori ditambahkan'); loadAll(); } else toast('Gagal: '+res.message); });
+}
+function openTambahLokasi(){
+  showModal(`<h3>Tambah Lokasi</h3><div class="field"><label>Nama Lokasi</label><input id="nlNama"></div>
+    <div class="field"><label>Proyek</label><input id="nlProyek"></div>
+    <div class="modal-actions"><button class="btn btn-green" onclick="submitTambahLokasi()">Simpan</button><button class="btn btn-outline" onclick="closeModal()">Batal</button></div>`);
+}
+function submitTambahLokasi(){
+  const nama = document.getElementById('nlNama').value.trim();
+  if(!nama){ toast('Nama wajib diisi'); return; }
+  apiPost('tambahLokasi', { nama, proyek: document.getElementById('nlProyek').value, adminName: CURRENT_USER['Nama Staff'] }).then(res=>{ closeModal(); if(res.success){ toast('Lokasi ditambahkan'); loadAll(); } else toast('Gagal: '+res.message); });
 }
 </script>
 </body>
