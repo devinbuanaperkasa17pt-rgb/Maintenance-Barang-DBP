@@ -127,6 +127,7 @@
       </select>
       <label style="margin-top:10px; display:block;">Nama</label>
       <input id="userName" placeholder="Nama kamu" value="Nadia Faramita">
+      <div style="margin-top:12px; font-size:11px; color:var(--gray-400); cursor:pointer; text-decoration:underline;" onclick="document.getElementById('configBar').style.display='block';">Ganti URL API</div>
     </div>
   </aside>
 
@@ -256,6 +257,16 @@
 let API_URL = '';
 let DATA = { barang: [], permintaan: [], jadwal: [] };
 
+// Muat URL API yang tersimpan dari kunjungan sebelumnya
+(function initApiUrl(){
+  const saved = localStorage.getItem('maintenance_api_url');
+  if(saved){
+    API_URL = saved;
+    document.getElementById('configBar').style.display = 'none';
+  }
+})();
+window.addEventListener('DOMContentLoaded', ()=>{ if(API_URL) loadAll(); });
+
 // ---------- NAV ----------
 document.querySelectorAll('.nav-item').forEach(item=>{
   item.addEventListener('click', ()=>{
@@ -277,6 +288,7 @@ function saveApiUrl(){
   const url = document.getElementById('apiUrlInput').value.trim();
   if(!url){ toast('Isi URL dulu'); return; }
   API_URL = url;
+  localStorage.setItem('maintenance_api_url', url);
   document.getElementById('configBar').style.display = 'none';
   loadAll();
 }
